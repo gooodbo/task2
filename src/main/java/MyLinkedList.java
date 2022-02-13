@@ -7,6 +7,7 @@ public interface MyLinkedList<T> {
 
     void add(int index, T t);
 
+
     boolean addAll(Collection<T> c);
 
     boolean addAll(int index, Collection<T> c);
@@ -19,7 +20,7 @@ public interface MyLinkedList<T> {
 
     T getFirst();
 
-    T getlast();
+    T getLast();
 
     boolean remove(Object o);
 
@@ -27,7 +28,7 @@ public interface MyLinkedList<T> {
 
     T removeFirst();
 
-    T removelast();
+    T removeLast();
 
     T set(int index, Object o);
 
@@ -36,4 +37,6 @@ public interface MyLinkedList<T> {
     void sort(Comparator<T> comparator);
 
     void clear();
+
+    boolean isEmpty();
 }
