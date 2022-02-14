@@ -20,7 +20,6 @@ public class NewLinkedList<T> implements MyLinkedList<T> {
             this.previous = previous;
         }
 
-
     }
 
     //Adds element in the end of list
@@ -179,7 +178,6 @@ public class NewLinkedList<T> implements MyLinkedList<T> {
         return false;
     }
 
-    @Override
     public T remove(int index) {
         return null;
     }
