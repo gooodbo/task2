@@ -1,13 +1,44 @@
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.LinkedList;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.stream.Stream;
 
-public class NewLinkedList<T> implements MyLinkedList<T> {
+public class NewLinkedList<T> implements MyLinkedList<T>, Iterable<T> {
     // First node
     private Node<T> first;
     // Last node
     private Node<T> last;
     private int size = 0;
+
+    @Override
+    public Iterator<T> iterator() {
+        return new Iterator<T>() {
+
+            private Node<T> fNode = first;
+
+            @Override
+            public boolean hasNext() {
+                if (fNode == null) return false;
+                return true;
+            }
+
+            @Override
+            public T next() {
+                T value = fNode.value;
+                fNode = fNode.next;
+                return value;
+            }
+        };
+    }
+
+    @Override
+    public void forEach(Consumer<? super T> action) {
+        Iterable.super.forEach(action);
+    }
+
+    @Override
+    public Spliterator<T> spliterator() {
+        return Iterable.super.spliterator();
+    }
 
     private static class Node<T> {
         T value;
@@ -78,6 +109,33 @@ public class NewLinkedList<T> implements MyLinkedList<T> {
         }
         return true;
     }
+
+    public boolean addAll(NewLinkedList<T> c) {
+        for(T t : c){
+            addLast(t);
+        }
+        return true;
+    }
+
+    public boolean addAll(int index, NewLinkedList<T> c) {
+        if (index > size || index < 0) throw new IndexOutOfBoundsException();
+        Node<T> f = first;
+        for (int i = 0; i < index - 1; i++){
+            f = f.next;
+        }
+        Node<T> after = f.next;
+        for (T t : c){
+            Node<T> newNode = new Node<>(t, null, f);
+            f.next = newNode;
+            f = newNode;
+        }
+        f.next = after;
+        after.previous = f;
+        size += c.size();
+        return true;
+    }
+
+
 
     @Override
     public boolean addAll(int index, Collection<T> c) {
@@ -309,5 +367,6 @@ public class NewLinkedList<T> implements MyLinkedList<T> {
         }
         return false;
     }
+
 
 }
