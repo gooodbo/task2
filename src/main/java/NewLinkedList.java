@@ -31,6 +31,7 @@ public class NewLinkedList<T> implements MyLinkedList<T> {
 
     @Override
     public void add(int index, T t) {
+        if (index > size || index < 0) throw new IndexOutOfBoundsException();
         if ( index < size/2) {
             int i = 0;
             Node<T> node = first;
@@ -80,7 +81,7 @@ public class NewLinkedList<T> implements MyLinkedList<T> {
 
     @Override
     public boolean addAll(int index, Collection<T> c) {
-        if (index > size) throw new NullPointerException();
+        if (index > size || index < 0) throw new IndexOutOfBoundsException();
         Node<T> f = first;
         for (int i = 0; i < index - 1; i++){
             f = f.next;
@@ -135,6 +136,7 @@ public class NewLinkedList<T> implements MyLinkedList<T> {
     // Return element from list by index
     @Override
     public T get(int index) {
+        if (index > size || index < 0) throw new IndexOutOfBoundsException();
         int i = -1;
         if (isEmpty()) {
             return null;
@@ -150,7 +152,7 @@ public class NewLinkedList<T> implements MyLinkedList<T> {
             }
             f = f.next;
         }
-        return null;
+        throw new IndexOutOfBoundsException();
     }
 
     //Return first element in the list
@@ -160,7 +162,7 @@ public class NewLinkedList<T> implements MyLinkedList<T> {
         if (f != null) {
             return f.value;
         }
-        throw new NullPointerException();
+        throw new IndexOutOfBoundsException();
     }
 
     //Return last element in the list
@@ -170,7 +172,7 @@ public class NewLinkedList<T> implements MyLinkedList<T> {
         if (l != null) {
             return l.value;
         }
-        throw new NullPointerException();
+        throw new IndexOutOfBoundsException();
     }
 
     @Override
@@ -200,54 +202,67 @@ public class NewLinkedList<T> implements MyLinkedList<T> {
 
     public T remove(int index) {
         if (isEmpty()) {
-            return null;
+            throw new IndexOutOfBoundsException();
         }
         if (index < 0 || index > size()) {
-            return null;
+            throw new IndexOutOfBoundsException();
         }
-        Node<T> f = first;
-        Node<T> l = null;
-
-        int i = -1;
-        while (f != null) {
-            i++;
-            if (i == index) {
-                if (l == null) {
-                    first = first.next;
-                } else if (f.next == null) {
-                    l.next = null;
-                    f = null;
-                } else {
-                    l.next = f.next;
-                    f.next.previous = l;
-                }
-                size--;
-                return f.value;
+        T returnable;
+        if (index < (size-1)/2 ) {
+            Node<T> f = first;
+            for (int i = 0; i < index; i++){
+                f = f.next;
             }
-            l = f;
-            f = f.next;
+            returnable = f.value;
+            f.previous.next = f.next;
         }
-        return null;
+        else {
+            Node<T> f = last;
+            for (int i = size - 1; i < index; i--){
+                f = f.next;
+            }
+            returnable = f.value;
+            f.previous.next = f.next;
+        }
+
+        return returnable;
     }
 
     @Override
     public T removeFirst() {
-
-        return remove(0);
+        T returnable = first.value;
+        first = first.next;
+        first.previous = null;
+        size--;
+        return returnable;
     }
 
     @Override
     public T removeLast() {
-        return remove(size--);
+        T returnable = last.value;
+        last.previous.next = null;
+        last = last.previous;
+        size--;
+        return  returnable;
     }
 
     @Override
     public T set(int index, T o) {
-        Node<T> node = first;
-        for (int i = 0; i < index; i++ ){
-            node = node.next;
+        if (index > size || index < 0) throw new IndexOutOfBoundsException();
+        if (index < (size - 1)/2) {
+            Node<T> node = first;
+            for (int i = 0; i < index; i++) {
+                node = node.next;
+            }
+            node.value = o;
         }
-        node.value = o;
+        else {
+            Node<T> node = last;
+            for (int i = size - 1; i > index; i--) {
+                node = node.previous;
+            }
+            node.value = o;
+        }
         return o;
     }
 
