@@ -118,21 +118,70 @@ public class NewLinkedList<T> implements MyLinkedList<T> {
 
     @Override
     public boolean remove(Object o) {
+        Node<T> f = first;
+        Node<T> l = null;
+
+        while (f != null) {
+            if (o.equals(f.value)) {
+                if (l == null) {
+                    first = first.next;
+                } else if (f.next == null) {
+                    l.next = null;
+                    f = null;
+                } else {
+                    l.next = f.next;
+                    f.next.previous = l;
+                }
+                size--;
+                return true;
+            }
+            l = f;
+            f = f.next;
+        }
         return false;
     }
 
     public T remove(int index) {
+        if (isEmpty()) {
+            return null;
+        }
+        if (index < 0 || index > size()) {
+            return null;
+        }
+        Node<T> f = first;
+        Node<T> l = null;
+
+        int i = -1;
+        while (f != null) {
+            i++;
+            if (i == index) {
+                if (l == null) {
+                    first = first.next;
+                } else if (f.next == null) {
+                    l.next = null;
+                    f = null;
+                } else {
+                    l.next = f.next;
+                    f.next.previous = l;
+                }
+                size--;
+                return f.value;
+            }
+            l = f;
+            f = f.next;
+        }
         return null;
     }
 
     @Override
     public T removeFirst() {
-        return null;
+
+        return remove(0);
     }
 
     @Override
     public T removeLast() {
-        return null;
+        return remove(size--);
     }
 
     @Override
