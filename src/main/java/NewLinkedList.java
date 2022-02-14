@@ -1,5 +1,6 @@
 import java.util.Collection;
 import java.util.Comparator;
+import java.util.LinkedList;
 
 public class NewLinkedList<T> implements MyLinkedList<T> {
     // First node
@@ -49,7 +50,11 @@ public class NewLinkedList<T> implements MyLinkedList<T> {
     public void addFirst(T t) {
         Node<T> newNode = new Node<>(t, null, null);
         if (first == null) {
-            newNode.next = null;
+            first = newNode;
+            last = newNode;
+        } else {
+            newNode.next = first;
+            first.previous = newNode;
             first = newNode;
         }
         size++;
@@ -58,11 +63,15 @@ public class NewLinkedList<T> implements MyLinkedList<T> {
     // Adds element in end of list
     @Override
     public void addLast(T t) {
-        NewLinkedList.Node<T> l = last;
-        Node<T> newNode = new Node(t, null, l);
-        last = newNode;
-        if (l != null)
-            l.next = newNode;
+        Node<T> newNode = new Node(t, null, null);
+        if (last == null) {
+            last = newNode;
+            first = newNode;
+        } else {
+            newNode.previous = last;
+            last.next = newNode;
+            last = newNode;
+        }
         size++;
     }
 
@@ -112,7 +121,6 @@ public class NewLinkedList<T> implements MyLinkedList<T> {
         return false;
     }
 
-    @Override
     public T remove(int index) {
         return null;
     }
