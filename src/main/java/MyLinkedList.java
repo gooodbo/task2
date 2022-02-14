@@ -30,7 +30,7 @@ public interface MyLinkedList<T> {
 
     T removeLast();
 
-    T set(int index, Object o);
+    T set(int index, T o);
 
     int size();
 

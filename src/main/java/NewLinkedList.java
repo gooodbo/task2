@@ -31,17 +31,70 @@ public class NewLinkedList<T> implements MyLinkedList<T> {
 
     @Override
     public void add(int index, T t) {
-
+        if ( index < size/2) {
+            int i = 0;
+            Node<T> node = first;
+            while (i != index) {
+                node = node.next;
+                i++;
+            }
+            Node<T> newNode = new Node<>(t, node.next, node);
+            node.next = newNode;
+            newNode.next.previous = newNode;
+            size++;
+        }
+        else {
+            int i = size - 1;
+            Node<T> node = last;
+            while (i != index) {
+                node = node.previous;
+                i--;
+            }
+            Node<T> newNode = new Node<>(t, node, node.previous);
+            node.previous = newNode;
+            newNode.previous.next = newNode;
+            size++;
+        }
     }
+
+    public String toString(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        Node<T> start = first;
+        while (start.next != null){
+            sb.append(start.value.toString() + ", ");
+            start = start.next;
+        }
+        sb.append(start.value.toString() + "]");
+        return sb.toString();
+    }
+
 
     @Override
     public boolean addAll(Collection<T> c) {
-        return false;
+        for(T t : c){
+            addLast(t);
+        }
+        return true;
     }
 
     @Override
     public boolean addAll(int index, Collection<T> c) {
-        return false;
+        if (index > size) throw new NullPointerException();
+        Node<T> f = first;
+        for (int i = 0; i < index - 1; i++){
+            f = f.next;
+        }
+        Node<T> after = f.next;
+        for (T t : c){
+            Node<T> newNode = new Node<>(t, null, f);
+            f.next = newNode;
+            f = newNode;
+        }
+        f.next = after;
+        after.previous = f;
+        size += c.size();
+        return true;
     }
 
 
@@ -49,11 +102,13 @@ public class NewLinkedList<T> implements MyLinkedList<T> {
     @Override
     public void addFirst(T t) {
         Node<T> newNode = new Node<>(t, null, null);
+        Node<T> f = first;
         if (first == null) {
-            first = newNode;
-            last = newNode;
-        } else {
-            newNode.next = first;
+            this.last = newNode;
+            this.first = newNode;
+        }
+        else {
+            newNode.next = f;
             first.previous = newNode;
             first = newNode;
         }
@@ -63,12 +118,14 @@ public class NewLinkedList<T> implements MyLinkedList<T> {
     // Adds element in end of list
     @Override
     public void addLast(T t) {
+        Node<T> l = last;
         Node<T> newNode = new Node(t, null, null);
-        if (last == null) {
+        if (first == null) {
             last = newNode;
             first = newNode;
-        } else {
-            newNode.previous = last;
+        }
+        else {
+            newNode.previous = l;
             last.next = newNode;
             last = newNode;
         }
@@ -103,7 +160,7 @@ public class NewLinkedList<T> implements MyLinkedList<T> {
         if (f != null) {
             return f.value;
         }
-        return null;
+        throw new NullPointerException();
     }
 
     //Return last element in the list
@@ -113,7 +170,7 @@ public class NewLinkedList<T> implements MyLinkedList<T> {
         if (l != null) {
             return l.value;
         }
-        return null;
+        throw new NullPointerException();
     }
 
     @Override
@@ -136,8 +193,13 @@ public class NewLinkedList<T> implements MyLinkedList<T> {
     }
 
     @Override
-    public T set(int index, Object o) {
-        return null;
+    public T set(int index, T o) {
+        Node<T> node = first;
+        for (int i = 0; i < index; i++ ){
+            node = node.next;
+        }
+        node.value = o;
+        return o;
     }
 
     // Return size
@@ -146,9 +208,25 @@ public class NewLinkedList<T> implements MyLinkedList<T> {
         return size;
     }
 
+
+    //Соритировка пузырьком
     @Override
     public void sort(Comparator<T> comparator) {
-
+        boolean a = false;
+        while (a == false){
+            a = true;
+            Node<T> f = first;
+            for (int i = 0; i < size - 1; i++){
+                int compare = comparator.compare(f.value, f.next.value);
+                if( compare == 1) {
+                    T tmp = f.value;
+                    f.value = f.next.value;
+                    f.next.value = tmp;
+                    a = false;
+                }
+                f = f.next;
+            }
+        }
     }
 
     //Removes all elements from list
